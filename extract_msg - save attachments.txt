@@ -1,0 +1,24 @@
+import os
+import pandas as pd
+
+# Use Case: You have a folder of .msg files (Outlook emails), each of which has one or more attachments.
+# You want to extract the attachments from each message and save only the attachments to a new folder. 
+
+# The package for this is extract_msg
+# pip install extract-msg # if needed
+import extract_msg
+
+# Set origin and destination paths; self-explanatory
+origin = r"Q:\Cases4\XEROX\Incoming\Topic 6 - FBI Financial Statements\FBI Financial Statements" 
+destination = r"Q:\Cases4\XEROX\Incoming\Topic 6 - FBI Financial Statements\attachments"
+#destination = os.makedir(origin+'\\'+'attachments') #alternative, if destination directory doesn't exist yet
+ext = '.msg' #type of files in the folder to be read
+
+# The loop below looks at each file in the origin that ends with .msg, extracts the attachments, and saves them to the destination directory. 
+for mail in os.listdir(origin):
+    try:
+        if mail.endswith(ext): 
+            msg = extract_msg.Message(mail) # this will create a local 'msg' object for each email in directory
+            msg.saveAttachments(customPath = destination) # send attachments to 'destination' path set above            
+    except(UnicodeEncodeError,AttributeError,TypeError) as e:
+        pass # Using this as some emails are not processed due to different formats like, emails sent by mobile.
